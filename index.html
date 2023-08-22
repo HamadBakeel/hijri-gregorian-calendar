@@ -3,19 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calendar App Vanilla JS</title>
-
+    <title>التقويم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="container">
       <div id="header">
         <div id="monthDisplay"></div>
-        <div>
-          <!-- <button id="dateSwitch"></button> -->
-
-          <button id="backButton">السابق</button>
+        <div id="hijriMonth"></div>
+        <div class="buttons">
           <button id="nextButton">التالي</button>
+          <button id="backButton">السابق</button>
         </div>
       </div>
 
@@ -33,21 +44,48 @@
     </div>
 
     <div id="newEventModal">
-      <h2>New Event</h2>
+      <h2>إدخال بيانات الحجز</h2>
 
-      <input id="eventTitleInput" placeholder="Event Title" />
+      <input id="eventTitleInput" placeholder="الإسم" maxlength="30" />
 
-      <button id="saveButton">Save</button>
-      <button id="cancelButton">Cancel</button>
+      <button id="saveButton">حفظ</button>
+      <button id="cancelButton">إلغاء</button>
     </div>
 
     <div id="deleteEventModal">
-      <h2>Event</h2>
+      <h2>تفاصيل الحجز</h2>
 
-      <p id="eventText"></p>
+      <div>
+        <i class="fa-solid fa-user"></i> إسم الشخص :
+        <p class="label" id="eventText"></p>
+      </div>
+      <div>
+        <i class="fa-solid fa-hashtag"></i> رقم الحجز :
+        <p class="label" id="eventNo"></p>
+      </div>
+      <div>
+        <i class="fa-solid fa-dollar-sign"></i> مبلغ الحجز :
+        <p class="label" id="eventPrice"></p>
+      </div>
+      <div>
+        <i class="fa-solid fa-calendar-days"></i> تاريخ الحجز :
+        <p class="label" id="eventDate"></p>
+      </div>
 
-      <button id="deleteButton">Delete</button>
-      <button id="closeButton">Close</button>
+      <!-- <button id="deleteButton">حذف</button> -->
+      <button class="closeButton">إغلاق</button>
+    </div>
+
+    <div id="unavailableDayModal">
+      <h2>يوم غير متاح للحجز</h2>
+
+      <div style="display: flex; align-items: center;">
+        <input type="checkbox" name="allDay" id="allDay" style="width: 20px;height: 20px; cursor: pointer;">
+        <label for="allDay" style=" cursor: pointer;">All Day</label>
+
+      </div>
+      <button id="saveButton">حفظ</button>
+      <button class="closeButton">إغلاق</button>
     </div>
 
     <div id="modalBackDrop"></div>

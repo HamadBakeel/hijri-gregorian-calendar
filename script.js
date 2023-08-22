@@ -2,11 +2,12 @@ let nav = 0;
 let clicked = null;
 let events = localStorage.getItem("events")
   ? JSON.parse(localStorage.getItem("events"))
-  : [];
-
+  : [{"date":"8/16/2023","title":"عماد", "no":"123", "price":"10000",},{"date":"8/15/2023","title":"سالم", "no":"123", "price":"10000",},{"date":"8/30/2023","title":"ساره", "no":"123", "price":"10000",},{"date":"7/17/2023","title":"Hana", "no":"123", "price":"10000",}];
+let unavailableDays = ['8/1/2023', '8/11/2023']
 const calendar = document.getElementById("calendar");
 const newEventModal = document.getElementById("newEventModal");
 const deleteEventModal = document.getElementById("deleteEventModal");
+const unavailableDayModal = document.getElementById("unavailableDayModal");
 const backDrop = document.getElementById("modalBackDrop");
 const eventTitleInput = document.getElementById("eventTitleInput");
 const weekdays = [
@@ -23,9 +24,16 @@ function openModal(date) {
   clicked = date;
 
   const eventForDay = events.find((e) => e.date === clicked);
+  const unavailableDay = unavailableDays.find((d) => d === clicked)
 
-  if (eventForDay) {
+  if(unavailableDay){
+    unavailableDayModal.style.display = "block"
+  }
+  else if (eventForDay) {
     document.getElementById("eventText").innerText = eventForDay.title;
+    document.getElementById("eventNo").innerText = eventForDay.no;
+    document.getElementById("eventPrice").innerText = eventForDay.price;
+    document.getElementById("eventDate").innerText = eventForDay.date;
     deleteEventModal.style.display = "block";
   } else {
     newEventModal.style.display = "block";
@@ -33,6 +41,7 @@ function openModal(date) {
 
   backDrop.style.display = "block";
 }
+
 function load() {
   const dt = new Date();
 
@@ -53,15 +62,32 @@ function load() {
     month: "numeric",
     day: "numeric",
   });
-  console.log(dateString);
-  console.log(dateString.split("،")[0]);
   const paddingDays = weekdays.indexOf(dateString.split("،")[0]);
-  console.log(paddingDays);
 
   document.getElementById("monthDisplay").innerText = `${dt.toLocaleDateString(
     "ar-us",
     { month: "long" }
   )} ${year}`;
+
+  // Set the hijri month in the calendar top
+  const currentHijriMonth = new Intl.DateTimeFormat("ar-TN-u-ca-islamic", {
+    month: "long",
+  }).format(dt);
+
+  // Move to the next month
+  dt.setMonth(dt.getMonth() + 1);
+  const nextHijriMonth = new Intl.DateTimeFormat("ar-TN-u-ca-islamic", {
+    month: "long",
+  }).format(dt);
+
+  dt.setMonth(dt.getMonth() + 1);
+  const currentYear = new Intl.DateTimeFormat("ar-TN-u-ca-islamic", {
+    year: "numeric",
+  }).format(dt);
+
+  document.getElementById(
+    "hijriMonth"
+  ).textContent = `${nextHijriMonth} - ${currentHijriMonth} ${currentYear} `;
 
   calendar.innerHTML = "";
 
@@ -83,14 +109,14 @@ function load() {
       const iWeekday = new Intl.DateTimeFormat("ar-TN-u-ca-islamic", {
         weekday: "long",
       }).format(new Date(year, month, i - paddingDays));
-    //   console.log(iWeekday);
       const hijriDate = new Intl.DateTimeFormat("ar-TN-u-ca-islamic", {
         day: "numeric",
         month: "long",
         weekday: "long",
         year: "numeric",
       }).format(new Date(year, month, i - paddingDays));
-      hijriDay.textContent = iDay == 1 ? iMonth : iDay;
+      hijriDay.textContent = iDay == 1 ? iMonth : convertToArabicNumerals(iDay);
+      hijriDay.classList.add("hijriDay");
       daySquare.appendChild(hijriDay);
 
       const eventForDay = events.find((e) => e.date === dayString);
@@ -106,6 +132,16 @@ function load() {
         daySquare.appendChild(eventDiv);
       }
 
+      const date = new Date(year, month, i - paddingDays).toLocaleDateString("en-us", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      });
+      const unavailableDay = unavailableDays.find((d) => d == date)
+      if(unavailableDay){
+        daySquare.classList.add('unavailable')
+      }
+
       daySquare.addEventListener("click", () => openModal(dayString));
     } else {
       daySquare.classList.add("padding");
@@ -119,6 +155,7 @@ function closeModal() {
   eventTitleInput.classList.remove("error");
   newEventModal.style.display = "none";
   deleteEventModal.style.display = "none";
+  unavailableDayModal.style.display = "none";
   backDrop.style.display = "none";
   eventTitleInput.value = "";
   clicked = null;
@@ -160,12 +197,34 @@ function initButtons() {
 
   document.getElementById("saveButton").addEventListener("click", saveEvent);
   document.getElementById("cancelButton").addEventListener("click", closeModal);
-  document
-    .getElementById("deleteButton")
-    .addEventListener("click", deleteEvent);
-  document.getElementById("closeButton").addEventListener("click", closeModal);
+  // document
+  //   .getElementById("deleteButton")
+  //   .addEventListener("click", deleteEvent);
+  document.querySelectorAll(".closeButton").forEach(button => button.addEventListener("click", closeModal));
 }
 
+function convertToArabicNumerals(text) {
+  var numerals = {
+    0: "٠",
+    1: "١",
+    2: "٢",
+    3: "٣",
+    4: "٤",
+    5: "٥",
+    6: "٦",
+    7: "٧",
+    8: "٨",
+    9: "٩",
+  };
+
+  // Iterate over the text and replace Arabic numbers with Arabic numerals
+  for (var numeral in numerals) {
+    var regex = new RegExp(numeral, "g");
+    text = text.replace(regex, numerals[numeral]);
+  }
+
+  return text;
+}
 
 initButtons();
 load();

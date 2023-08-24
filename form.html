@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title">Create New</h3>
+      </div>
+      <div class="card-body">
+        <form action="sp.bookings.store" method="post">
+          <div class="mb-10">
+            <label for="customer_id" class="required form-label"
+              >Customer:</label
+            >
+            <select
+              class="form-select"
+              name="customer_id"
+              id="customer_id"
+              data-control="select2"
+              data-placeholder="Select"
+            >
+              <option></option>
+              @foreach($customers as $customer)
+              <option value="{{ $customer->id }}">
+                {{ $customer->first_name . ' ' . $customer->last_name }}
+              </option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="mb-10">
+            <label for="booking_status_id" class="required form-label"
+              >Booking Status:</label
+            >
+            <select
+              class="form-select"
+              name="booking_status_id"
+              id="booking_status_id"
+              data-control="select2"
+              data-placeholder="Select"
+            >
+              <option></option>
+              @foreach($booking_status as $status)
+              <option value="{{ $status->id }}">{{ $status->name }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="mb-10">
+            <label for="booking_date" class="form-label">Booking Date:</label>
+            <input
+              class="form-control"
+              placeholder="Enter Booking Date"
+              id="booking_date"
+              name="booking_date"
+            />
+          </div>
+
+          <div class="mb-10">
+            <label for="discount" class="form-label">Discount:</label>
+            <input
+              type="number"
+              class="form-control"
+              step="1"
+              placeholder="Enter Discount"
+              name="discount"
+              id="discount"
+            />
+          </div>
+
+          <div class="row g-3 my-1">
+            <div class="col-auto">
+              <label for="paymentsNo" class="form-label">الدفعات:</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="ادخل عدد الدفعات"
+                name="paymentsNo"
+                id="paymentsNo"
+                min="1"
+                max="10"
+              />
+            </div>
+            <div class="col-auto align-items-end d-flex">
+              <button type="button" id="createPayments" class="btn btn-primary">
+                إنشاء
+              </button>
+            </div>
+          </div>
+          <div class="row" id="paymentInputsContainer"></div>
+
+          <div class="mb-10 mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          class=""
+        >
+          <div
+            class="toast-container position-absolute top-0 end-0 p-3"
+            id="toastPlacement"
+            style="z-index: 9999"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      function generatePaymentInputs() {
+        var paymentsNoInput = document.getElementById("paymentsNo");
+        var createPayments = document.getElementById("createPayments");
+        var paymentsNo = parseInt(paymentsNoInput.value);
+        var paymentInputsContainer = document.getElementById(
+          "paymentInputsContainer"
+        );
+
+        // Clear the container before generating new inputs
+        paymentInputsContainer.innerHTML = "";
+
+        // Validate the number of payments
+        if (paymentsNo < 1 || paymentsNo > 10) {
+          var toastPlacement = document.getElementById("toastPlacement");
+          var toastContent = `
+              <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+                <div class="toast-header">
+                  <strong class="me-auto">خطأ</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                  يرجى إدخال عدد الدفعات بين 1 و 10.
+                </div>
+              </div>
+            `;
+          toastPlacement.innerHTML = toastContent;
+
+          var toastElement = toastPlacement.querySelector(".toast");
+          var toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000,
+          });
+          toast.show();
+
+          return;
+        }
+
+        // Generate inputs for each payment part
+        for (var i = 1; i <= paymentsNo; i++) {
+          var columnDiv = document.createElement("div");
+          columnDiv.classList.add("col-lg-4", "col-md-6", "mb-3");
+
+          var paymentLabel = document.createElement('label')
+          paymentLabel.textContent = 'تفاصيل الدفعة ' + i;
+
+          var paymentInput = document.createElement("input");
+          paymentInput.type = "number";
+          paymentInput.name = "payment" + i;
+          paymentInput.placeholder = "مبلغ الدفعة  " + i;
+          paymentInput.classList.add("form-control", "my-1");
+        
+          var paymentDate = document.createElement("input");
+          paymentDate.type = "date";
+          paymentDate.name = "payment" + i;
+          paymentDate.placeholder = "تاريخ تسليم الدفعة  " + i;
+          paymentDate.classList.add("form-control", "my-1");
+
+          columnDiv.appendChild(paymentLabel);
+          columnDiv.appendChild(paymentInput);
+          columnDiv.appendChild(paymentDate);
+          paymentInputsContainer.appendChild(columnDiv);
+        }
+      }
+
+      // Add event listener to the createPayments button
+      var createPayments = document.getElementById("createPayments");
+      createPayments.addEventListener("click", generatePaymentInputs);
+    </script>
+  </body>
+</html>

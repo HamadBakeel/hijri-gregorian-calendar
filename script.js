@@ -28,6 +28,7 @@ function openModal(date) {
 
   if(unavailableDay){
     unavailableDayModal.style.display = "block"
+    backDrop.style.display = "block";
   }
   else if (eventForDay) {
     document.getElementById("eventText").innerText = eventForDay.title;
@@ -35,11 +36,11 @@ function openModal(date) {
     document.getElementById("eventPrice").innerText = eventForDay.price;
     document.getElementById("eventDate").innerText = eventForDay.date;
     deleteEventModal.style.display = "block";
+    backDrop.style.display = "block";
   } else {
-    newEventModal.style.display = "block";
+    // newEventModal.style.display = "block";
   }
 
-  backDrop.style.display = "block";
 }
 
 function load() {

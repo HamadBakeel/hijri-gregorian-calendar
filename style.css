@@ -1,5 +1,5 @@
-*{
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+* {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
   direction: rtl;
 }
 body {
@@ -18,9 +18,9 @@ button {
   border-radius: 5px;
   color: white;
 }
-.buttons{
+.buttons {
   display: flex;
-    gap: 10px;
+  gap: 10px;
 }
 
 #header {
@@ -38,8 +38,8 @@ button {
   width: 770px;
   background-image: linear-gradient(to left, #6100bf, #f54374);
 }
-#hijriMonth{
-  color: white; 
+#hijriMonth {
+  color: white;
   font-size: 14px;
   font-weight: bold;
 }
@@ -77,11 +77,11 @@ button {
   isolation: isolate;
   font-size: 24px;
   font-weight: bolder;
-  transition: .3s;
+  transition: 0.3s;
 }
 .day:hover {
   background-color: #e8faed;
-  color: black
+  color: black;
 }
 
 .day + #currentDay {
@@ -108,15 +108,15 @@ button {
   font-weight: bold;
 }
 
-.available{
+.available {
   background: #7400c3;
 }
 
-.unavailable{
+.unavailable {
   background: #c8c8c8;
 }
 
-.hijriDay{
+.hijriDay {
   font-size: 18px;
   font-weight: bold;
 }
@@ -147,16 +147,16 @@ button {
   font-family: sans-serif;
 }
 
-#deleteEventModal div{
+#deleteEventModal div {
   display: flex;
   align-items: center;
   gap: 10px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-#deleteEventModal .label{
+#deleteEventModal .label {
   font-weight: normal;
-  margin: 0 ;
+  margin: 0;
 }
 
 #eventTitleInput {
@@ -193,4 +193,70 @@ button {
   height: 100vh;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+@media screen and (max-width: 768px) {
+  #container {
+    width: 600px;
+  }
+  .day {
+    width: 75px;
+    height: 75px;
+    font-size: 20px;
+    padding-top: 5px;
+  }
+  .hijriDay {
+    font-size: 16px;
+  }
+  .event {
+    font-size: 14px;
+    width: calc(101% - 2.5rem);
+    height: calc(98% - 0.5rem);
+    padding-top: 0.5rem;
+    padding-inline-end: 0.5rem;
+  }
+}
+@media screen and (max-width: 576px) {
+  #container {
+    width: 350px;
+  }
+  #monthDisplay {
+    font-size: 14px;
+  }
+  #header {
+    flex-wrap: wrap;
+  }
+  .buttons {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  #weekdays div {
+    font-size: 12px;
+  }
+  .day {
+    width: 48px;
+    height: 48px;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-inline-start: 6px;
+  }
+  .hijriDay {
+    font-size: 12px;
+  }
+  .event {
+    font-size: 10px;
+    width: calc(101% - 1.8rem);
+    height: calc(98% - 0.3rem);
+    padding-top: 0.3rem;
+    padding-inline-end: 0.3rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  #newEventModal, #deleteEventModal, #unavailableDayModal{
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
 }
